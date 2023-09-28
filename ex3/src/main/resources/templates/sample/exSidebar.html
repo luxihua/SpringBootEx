@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<!--   www.~~~~~/sample/exSidebar 로 진입.  여기서 파라미터를 공통 레이아웃(basic.html) 에 전달하여 처리한다!  -->
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <h1>From exSidebar Page</h1>
+    </th:block>
+</th:block>
+</html>

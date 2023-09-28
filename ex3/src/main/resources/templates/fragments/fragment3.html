@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!-- target부분에는 first, second의 파라미터를 가지게 된다 -->
+  <div th:fragment="target(first, second)">
+
+    <style>
+      .c1 {
+        background-color:red;
+        }
+      .c2 {
+        background-color:blue;
+        }
+    </style>
+
+      <!-- 파라미터로 가져온 것을 그대로 사용할 수 있게 된다 -->
+      <div class="c1">
+          <th:block th:replace = "${first}"></th:block>
+      </div>
+
+      <div class="c2">
+          <th:block th:replace= "${second}"></th:block>
+      </div>
+
+
+
+
+  </div>
+
+
+
+
+
+</body>
+</html>

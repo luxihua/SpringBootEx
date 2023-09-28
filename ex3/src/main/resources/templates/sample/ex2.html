@@ -11,7 +11,7 @@
         }
     </style>
 
-<!-- 반복문 처리 -->
+<!-- 반복문 처리 th:each-->
 <!--    <ul>-->
 <!--        <li th:each="dto: ${list}">-->
 <!--             [[${dto}]]-->
@@ -25,10 +25,19 @@
         </li>
     </ul>
 
+
     <ul>
-        <li th:each="dto, stae : ${list}" th:class="${dto.sno%5 == 0}
+        <li th:each="dto, state : ${list}" th:class="${dto.sno%5 == 0}
             ? 'target'" th:text="${dto}">
         </li>
+    </ul>
+
+    <!-- 별도의 태그 필요 없이 삼항연삭식을 작성할 수 있음 -->
+    <!-- th:block의 경우 html로 처리되지 않아 루프 등을 별도로 처리하는 용도로 사용 -->
+    <ul>
+        <th:block th:each="dto: ${list}">
+            <li th:text="${dto.sno % 5 == 0}?${dto.sno}:${dto.first}"></li>
+        </th:block>
     </ul>
 
 

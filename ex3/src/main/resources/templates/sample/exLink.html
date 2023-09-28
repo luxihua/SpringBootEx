@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--    <ul>-->
+<!--        <li th:each="dto : ${list}" >-->
+<!--            <a th:href="@{/sample/exView}">[[${dto}]]</a>-->
+<!--        </li>-->
+<!--    </ul>-->
+
+    <ul>
+        <li th:each="dto: ${list}" >
+            <!--spring boot에서 날짜 포맷팅을 하는 방법-> #temporals 객체를 사용함 -->
+            [[${dto.sno}]] --- [[${#temporals.format(dto.regTime, 'yyyy/MM/dd')}]]
+        </li>
+    </ul>
+</body>
+</html>
