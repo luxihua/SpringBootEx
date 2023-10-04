@@ -13,6 +13,8 @@ import org.springframework.data.domain.Sort;
 import org.zerock.guestbook.entity.Guestbook;
 import org.zerock.guestbook.entity.QGuestbook;
 
+import java.util.stream.IntStream;
+
 @SpringBootTest
 public class GuestbookRepositoryTests {
 
@@ -22,7 +24,7 @@ public class GuestbookRepositoryTests {
 //    @Test
 //    public void insertDummies(){
 //
-//        IntStream.rangeClosed(1, 300).forEach( i -> {
+//        IntStream.rangeClosed(1, 300).forEach(i -> {
 //
 //            Guestbook guestbook = Guestbook.builder()
 //                    .title("Title...." + i)

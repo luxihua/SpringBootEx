@@ -26,6 +26,7 @@ public class GuestbookServiceTests {
 //        System.out.println(service.register(guestbookDTO));
 //    }
 
+    // 이 테스트는 목록 처리 테스트로 엔티티 객체들이 DTO로 변환되었는지를 검사함.
     @Test
     public void testList() {
 
@@ -33,8 +34,17 @@ public class GuestbookServiceTests {
 
         PageResultDTO<GuestbookDTO, Guestbook> resultDTO = service.getList(pageRequestDTO);
 
+        System.out.println("PREV:  " + resultDTO.isPrev());
+        System.out.println("NEXT: " + resultDTO.isNext());
+        System.out.println("TOTAL: " + resultDTO.getTotalPage());
+
+        System.out.println(("------------------------------------"));
         for (GuestbookDTO guestbookDTO : resultDTO.getDtoList()) {
             System.out.println(guestbookDTO);
         }
+
+        System.out.println("=======================================");
+        resultDTO.getPageList().forEach(i -> System.out.println(i));
+
     }
 }
