@@ -1,4 +1,4 @@
-# Spring MVC/JPA/Thymeleaf 연습
+Spring MVC/JPA/Thymeleaf 연습
 
 ----------------------------------
 ## 프로젝트 기본 구조
@@ -253,4 +253,179 @@ public class GuestbookRepositoryTests {
        });
    }
 ```
+
+---------------------------------------
+
+## 서비스 계층과 DTO
+
+#### 스프링부트에서의 DTO
+
+- 서비스 계층에서는 DTO로 파라미터와 리턴 타입을 처리하도록 구성
+- 이유 : 1. DTO를 사용하면 엔티티 객체의 범위를 한정 지을 수 있음
+            2. 화면과 데이터를 분리하려는 취지에도 좀 더 부함
+- 단점 : Entity-> DTO, DTO-> Entity 변환 과정이 필요함
+
+#### DTO의 사용
+
+1. service 패키지 내 GuestbookDTO 클래스 정의
+
+``` Java
+package org.zerock.guestbook.dto;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class GuestbookDTO {
+
+    private Long gno;
+    private String title;
+    private String content;
+    private String writer;
+    private LocalDateTime regDate, modDate;
+}
+```
+-> 이 필드를 가지고 자유롭게 필요한 내용을 전달받고, 반환할 수 있음
+-> 어디서? GuestbookServiceImpl.java 클래스에서
+-> 그러기 위해선 우선 GuestbookService.java에 인터페이스 추가
+-> 그 후 DTO-> Entity 변환 처리
+
+``` GuestbookService 인터페이스에 default 메서드를 이용하여 자동 처리 가능 ```
+
+
+2. GeustbookService.java에 인터페이스 추가
+    - register 메서드와 변환 메서드 dtoToEntity 등록
+    
+``` Java
+
+package org.zerock.guestbook.service;
+
+import org.springframework.data.domain.PageRequest;
+import org.zerock.guestbook.dto.GuestbookDTO;
+import org.zerock.guestbook.dto.PageRequestDTO;
+import org.zerock.guestbook.dto.PageResultDTO;
+import org.zerock.guestbook.entity.Guestbook;
+
+// GuestbookDTO를 이용해 필요한 내용을 전달받고, 반환하도록 처리하는데 필요한 인터페이스
+public interface GuestbookService {
+    Long register(GuestbookDTO dto);
+
+default Guestbook dtoToEntity(GuestbookDTO dto) {
+        Guestbook entity = Guestbook.builder()
+                .gno(dto.getGno())
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .writer(dto.getWriter())
+                .build();
+        return entity;
+    }
+
+}
+
+```
+
+3. GuestbookServiceImpl.java에 인터페이스 구현
+
+``` Java
+
+
+@Service
+@Log4j2
+@RequiredArgsConstructor // 의존성 자동 주입
+public class GuestbookServiceImpl implements GuestbookService {
+
+    private final GuestbookRepository repository; // 반드시 final로 선언해야함
+
+    // 파라미터를 통해 GestbookServiced에서 가져온 dto를 전달할 수 있음
+    @Override
+    public Long register(GuestbookDTO dto) {
+
+        log.info("DTO-------------------------");
+        log.info(dto);
+
+        Guestbook entity = dtoToEntity(dto);
+
+        log.info(entity);
+
+        repository.save(entity);
+
+        return null;
+    }
+```
+
+
+--------------------------
+
+## 목록 처리
+
+#### 목록 처리를 위해 고려해야 할 사항
+
+1. 화면에서 필요한 목록 데이터에 대한 DTO 생성
+2. DTO를 Pageable 타입으로 전환
+3. Page<Entity>를 화면에서 사용하기 쉬운 DTO의 리스트 등으로 변환
+4. 화면에 필요한 페이지 번호 처리
+
+#### 목록 처리를 위한 DTO
+
+1. 페이지 요청 처리 DTO(PageRequestDTO)
+
+    - 화면에서 전달되는 목록 관련된 데이터에 대한 DTO를 PageRequestDTO 클래스 이름으로 생성
+    - 화면에서 필요한 결과는 PageResultDTO 클래스로 생성
+    
+    * PageRequest.java
+    ``` Java
+    package org.zerock.guestbook.dto;
+
+
+    import lombok.AllArgsConstructor;
+    import lombok.Builder;
+    import lombok.Data;
+    import org.springframework.data.domain.PageRequest;
+    import org.springframework.data.domain.Pageable;
+    import org.springframework.data.domain.Sort;
+
+    @Builder
+    @AllArgsConstructor
+    @Data
+    public class PageRequestDTO {
+
+        private int page;
+        private int size;
+        
+        public PageRequestDTO() {
+            this.page =1;
+            this.size = 10;
+        }
+
+        // Pageable 타입의 객체 만들기
+        public Pageable getPageable(Sort sort) {
+
+            return PageRequest.of(page-1 , size, sort);
+        }
+    }
+    ```
+
+
+2. 페이지 결과 처리DTO(PageResultDTO)
+    - 페이지 처리 결과를 Page<Entity>타입으로 반환
+    - 이 반환된 데이터를 처리하기 위한 PageResultDTO 관련 클래스 작성
+    
+    ``` Java
+    
+
+
+
+
+
+
+
+
 

@@ -1,4 +1,4 @@
-package org.zerock.guestbook.dto;
+package org.zerock.board.dto;
 
 
 import lombok.AllArgsConstructor;

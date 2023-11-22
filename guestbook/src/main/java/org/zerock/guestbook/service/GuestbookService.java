@@ -11,6 +11,15 @@ import org.zerock.guestbook.entity.Guestbook;
 public interface GuestbookService {
     Long register(GuestbookDTO dto);
 
+    // 방명록 조회를 위한 read 메서드 추가
+    GuestbookDTO read(Long gno);
+
+    // 삭제 기능 메서드 추가
+    void remove(Long gno);
+
+    // 수정 기능 메서드 추가
+    void modify(GuestbookDTO dto);
+
     // 서비스 계층
     // PageRequestDTO를 파라미터로, PageResultDTo를 리턴 타입으로 사용하는 getList() 설계
     PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO requestDTO);
