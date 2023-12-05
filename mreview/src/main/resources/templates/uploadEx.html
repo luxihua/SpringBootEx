@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+  <input name="uploadFiles" type="file" multiple>
+  <button class="uploadBtn">Upload</button>
+
+  <div class="uploadResult">
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+  <script>
+    $('.uploadBtn').click(function () {
+
+      var formData = new FormData();
+
+      var inputFile = $("input[type='file']");
+
+      var files = inputFile[0].files;
+
+      for( var i=0 ; i< files.length ; i++) {
+        console.log(files[i]);
+        formData.append("uploadFiles", files[i]);
+      }
+
+      // 실제 업로드 부분
+        // upload ajax
+
+        $.ajax({
+            url: '/uploadAjax',
+            processData: false,
+            // 일단 multipart/form-data 타입을 사용하기 위해 contentType: false로 설정
+            contentType: false,
+            data: formData,
+            type: 'POST',
+            dataType: 'json',
+            success: function (result) {
+                console.log(result);
+                // 나중에 화면 처리
+            },
+            error:function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+            }
+
+        }); //$.ajax
+
+
+      function showUploadedImages(arr) {
+
+          console.log(arr);
+
+          var divArea = $('.uploadResult');
+
+          var str = "";
+
+          // 한번에 버튼과 이미지를 묶어서 같이 삭제할 수 있도록 처리
+          for(var i = 0 ; i< arr.length; i++) {
+              str += "<div>";
+              str += "<img src = '/display?fileName="+arr[i].thumbnailURL+"'>"; // thumbnailURL로 변경
+              str += "<button class='removeBtn' data-name='"+arr[i].imageURL+"'>REMOVE</button>>"
+              str += "</div>"
+          }
+          divArea.append(str);
+      }
+
+      // upload ajax
+        $.ajax({
+            url: '/uploadAjax',
+            processData: false,
+            contentType: false,
+            data: formData,
+            type: 'POST',
+            dataType: 'json',
+            success: function(result) {
+                // 나중에 화면 처리
+                showUploadedImages(result);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+            }
+
+        }); // $.ajax
+
+      // remove ajax
+
+      $(".uploadResult").on("click", ".removeBtn", function(e) {
+
+          var target = $(this);
+          var fileName = target.data("name");
+          var targetDiv = $(this).closest("div");
+
+          console.log(fileName);
+
+          $.post('/removeFile', {fileName: fileName}, function (result) {
+              console.log(result);
+              if(result === true) {
+                  targetDiv.remove();
+              }
+          })
+      });
+
+
+
+
+    });
+
+  </script>
+
+</body>
+</html>

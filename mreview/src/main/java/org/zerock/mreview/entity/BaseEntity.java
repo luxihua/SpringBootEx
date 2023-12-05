@@ -1,4 +1,4 @@
-package org.zerock.board.entity;
+package org.zerock.mreview.entity;
 
 
 // 자동 날짜/시간 출력은 애노테이션을 통해 가능
@@ -29,5 +29,4 @@ abstract public class BaseEntity {
     @Column( name = "modDate")
     // 수정 날짜 및 시간
     private LocalDateTime modDate;
-
 }
