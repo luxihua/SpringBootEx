@@ -14,22 +14,34 @@ import org.zerock.club.security.dto.ClubAuthMemberDTO;
 @RequestMapping("/sample/")
 public class SampleController {
 
-    @GetMapping("/all")
+    @PreAuthorize("permitAll()")
+    @GetMapping({"/all", "/loginSuccess"})
     public void exAll() {
         log.info("exAll........................");
     }
 
     @GetMapping("/member")
-    public void exMember(@AuthenticationPrincipal ClubAuthMemberDTO clubAuthMember)
-    {
+    public void exMember(@AuthenticationPrincipal ClubAuthMemberDTO clubAuthMember) {
         log.info("exMember................");
 
         log.info("--------------------------------");
         log.info(clubAuthMember);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
     public void exAdmin() {
+
         log.info("exAdmin...............");
+    }
+
+    @PreAuthorize("#clubAuthMember != null && #clubAuthMember.username eq \"user95@zerock.org\" ")
+    @GetMapping("/exOnly")
+    public String exMemberOnly(@AuthenticationPrincipal ClubAuthMemberDTO clubAuthMember) {
+
+        log.info("exMemberOnly.............................");
+        log.info(clubAuthMember);
+
+        return "/sample/admin";
     }
 }
