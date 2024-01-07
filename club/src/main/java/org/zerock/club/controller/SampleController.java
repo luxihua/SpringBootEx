@@ -14,34 +14,41 @@ import org.zerock.club.security.dto.ClubAuthMemberDTO;
 @RequestMapping("/sample/")
 public class SampleController {
 
-    @PreAuthorize("permitAll()")
-    @GetMapping({"/all", "/loginSuccess"})
-    public void exAll() {
-        log.info("exAll........................");
+    @GetMapping("/all")
+    public void exAll(){
+        log.info("exAll..........");
     }
 
-    @GetMapping("/member")
-    public void exMember(@AuthenticationPrincipal ClubAuthMemberDTO clubAuthMember) {
-        log.info("exMember................");
-
-        log.info("--------------------------------");
-        log.info(clubAuthMember);
-    }
+//    @GetMapping("/member")
+//    public void exMember(){
+//        log.info("exMember..........");
+//    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
-    public void exAdmin() {
-
-        log.info("exAdmin...............");
+    public void exAdmin(){
+        log.info("exAdmin..........");
     }
 
-    @PreAuthorize("#clubAuthMember != null && #clubAuthMember.username eq \"user95@zerock.org\" ")
-    @GetMapping("/exOnly")
-    public String exMemberOnly(@AuthenticationPrincipal ClubAuthMemberDTO clubAuthMember) {
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/member")
+    public void exMember(@AuthenticationPrincipal ClubAuthMemberDTO clubAuthMember){
 
-        log.info("exMemberOnly.............................");
+        log.info("exMember..........");
+
+        log.info("-------------------------------");
+        log.info(clubAuthMember);
+
+    }
+
+    @PreAuthorize("#clubAuthMember != null && #clubAuthMember.username eq \"user95@zerock.org\"")
+    @GetMapping("/exOnly")
+    public String exMemberOnly(@AuthenticationPrincipal ClubAuthMemberDTO clubAuthMember){
+
+        log.info("exMemberOnly.............");
         log.info(clubAuthMember);
 
         return "/sample/admin";
     }
+
 }
